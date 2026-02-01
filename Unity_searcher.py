@@ -224,7 +224,7 @@ def main():
     current_dir = args.directory if args.directory else get_script_dir()
 
     print("Unity Asset Text Searcher")
-    print("Made by Snowyegret, Version: 2.0")
+    print("Made by Snowyegret, Version: 2.0.0")
     print("")
     print(f"Search directory: {current_dir}")
     print("")
