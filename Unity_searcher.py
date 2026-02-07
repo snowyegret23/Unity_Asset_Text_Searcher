@@ -19,6 +19,7 @@ import UnityPy
 import os
 import csv
 import sys
+import ctypes
 import clr
 import argparse
 
@@ -55,8 +56,26 @@ def find_ggm_file(data_path):
     return None
 
 
-def get_unity_version(data_path):
+def find_data_path(search_dir):
+    """Find the _Data folder from the given directory."""
+    # If search_dir itself is a _Data folder
+    if search_dir.lower().endswith("_data"):
+        return search_dir
+    # Search for _Data subfolder
+    try:
+        for d in os.listdir(search_dir):
+            if d.lower().endswith("_data") and os.path.isdir(os.path.join(search_dir, d)):
+                return os.path.join(search_dir, d)
+    except OSError:
+        pass
+    return None
+
+
+def get_unity_version(search_dir):
     """Extract Unity version from the game data folder."""
+    data_path = find_data_path(search_dir)
+    if data_path is None:
+        return None
     ggm_path = find_ggm_file(data_path)
     if ggm_path is None:
         return None
@@ -69,12 +88,9 @@ def get_unity_version(data_path):
     return None
 
 
-def file_search(file_path, search_text: str, csv_writer: csv.writer, unity_version: str = None):
+def file_search(file_path, search_text: str, csv_writer: csv.writer):
     """Search for text in Unity asset files."""
     ret_lst = []
-
-    if unity_version:
-        UnityPy.config.FALLBACK_UNITY_VERSION = unity_version
 
     try:
         env = UnityPy.load(file_path)
@@ -92,7 +108,7 @@ def file_search(file_path, search_text: str, csv_writer: csv.writer, unity_versi
                 assets_name = obj.assets_file.name
                 obj_raw = obj.get_raw_data()
                 obj_raw_decoded = obj_raw.decode("utf-8", errors="ignore").lower()
-                obj_name = obj.peek_name() if obj.peek_name() else "-"
+                obj_name = obj.peek_name() or "-"
                 obj_pathid = obj.path_id
 
                 # Check for search text in multiple ways
@@ -202,7 +218,7 @@ def collect_files(search_dir):
 
 def update_title(current, total, description):
     """Update console title with progress."""
-    os.system(f'title "[{str(current).zfill(6)} / {str(total).zfill(6)}] {description}"')
+    ctypes.windll.kernel32.SetConsoleTitleW(f"[{current:06d} / {total:06d}] {description}")
 
 
 def main():
@@ -315,7 +331,7 @@ def main():
             print("Searching asset files...")
             for asset in asset_list:
                 update_title(current_file, total_files, f"Searching asset: {os.path.basename(asset)}")
-                txt_result_lst.extend(file_search(asset, search_text, asset_csv_writer, unity_version))
+                txt_result_lst.extend(file_search(asset, search_text, asset_csv_writer))
                 current_file += 1
 
         # Write results to TXT
@@ -337,7 +353,7 @@ def main():
             txt_file.write("No results found.\n")
 
     # Reset title
-    os.system('title "Unity Asset Text Searcher - Complete"')
+    ctypes.windll.kernel32.SetConsoleTitleW("Unity Asset Text Searcher - Complete")
 
     # Print summary
     print("\n" + "=" * 50)

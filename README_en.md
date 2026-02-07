@@ -25,7 +25,7 @@ python Unity_searcher.py
 ## Usage
 
 ### Basic Usage
-1. Copy `Unity_Searcher.exe` to the game's `_Data` folder
+1. Copy `Unity_Searcher.exe` to the game's root folder or `_Data` folder
 2. Copy `Mono.Cecil.dll` to the same location (required for DLL search)
 3. Run and enter the text to search
 
@@ -37,7 +37,7 @@ Options:
   -h, --help            Show help message
   -v, --unity-version   Specify Unity version (e.g., -v "2022.3.15f1")
   -s, --search          Text to search (prompts if not specified)
-  -d, --directory       Search directory (default: current directory)
+  -d, --directory       Search directory (default: current directory, game root or _Data folder)
   --no-dll              Skip DLL searching
 ```
 

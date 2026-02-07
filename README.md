@@ -25,7 +25,7 @@ python Unity_searcher.py
 ## 사용법
 
 ### 기본 사용
-1. `Unity_Searcher.exe`를 게임의 `_Data` 폴더에 복사
+1. `Unity_Searcher.exe`를 게임의 루트 폴더 또는 `_Data` 폴더에 복사
 2. `Mono.Cecil.dll`도 같은 위치에 복사 (DLL 검색 기능 사용 시)
 3. 실행 후 검색할 텍스트 입력
 
@@ -37,7 +37,7 @@ Unity_searcher.py [-h] [-v UNITY_VERSION] [-s SEARCH] [-d DIRECTORY] [--no-dll]
   -h, --help            도움말 표시
   -v, --unity-version   Unity 버전 지정 (예: -v "2022.3.15f1")
   -s, --search          검색할 텍스트 (미지정 시 입력 프롬프트)
-  -d, --directory       검색 디렉토리 (기본: 현재 디렉토리)
+  -d, --directory       검색 디렉토리 (기본: 현재 디렉토리, 게임 루트 또는 _Data 폴더)
   --no-dll              DLL 검색 건너뛰기
 ```
 
